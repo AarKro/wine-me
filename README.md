@@ -2,4 +2,4 @@
 Gesture-Controlled interactive image viewer.
 
 ## Demo
-https://aarkro.github.io/wine-me/
+https://aarkro.github.io/wine-me/g
