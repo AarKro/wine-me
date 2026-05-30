@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="asia-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2d1b4e"/>
+      <stop offset="1" stop-color="#1a0f2e"/>
+    </linearGradient>
+    <linearGradient id="asia-accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b388eb"/>
+      <stop offset="1" stop-color="#f694c1"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#asia-bg)"/>
+  <rect x="160" y="180" width="120" height="14" fill="url(#asia-accent)"/>
+  <text x="160" y="320" font-family="system-ui, sans-serif" font-size="42" font-weight="500" fill="#b388eb" letter-spacing="6">REGION 03</text>
+  <text x="160" y="460" font-family="system-ui, sans-serif" font-size="180" font-weight="800" fill="#ffffff">Asia</text>
+  <text x="160" y="560" font-family="system-ui, sans-serif" font-size="40" font-weight="400" fill="#c8b6e2">A fast-growing scene from Ningxia to Yamanashi.</text>
+
+  <g font-family="system-ui, sans-serif" fill="#ffffff">
+    <g transform="translate(160, 700)">
+      <text font-size="28" fill="#b388eb" letter-spacing="4">VINEYARDS</text>
+      <text y="60" font-size="64" font-weight="700">~0.9M ha</text>
+    </g>
+    <g transform="translate(680, 700)">
+      <text font-size="28" fill="#b388eb" letter-spacing="4">SIGNATURE</text>
+      <text y="60" font-size="64" font-weight="700">Koshu</text>
+    </g>
+    <g transform="translate(1200, 700)">
+      <text font-size="28" fill="#b388eb" letter-spacing="4">HARVEST</text>
+      <text y="60" font-size="64" font-weight="700">Aug – Oct</text>
+    </g>
+  </g>
+
+  <text x="160" y="980" font-family="system-ui, sans-serif" font-size="28" fill="#5b4a6a">Two-finger swipe to return to the map.</text>
+</svg>

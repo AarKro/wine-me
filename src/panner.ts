@@ -16,17 +16,33 @@ interface ZoomAnchor {
 
 export class Panner {
   private img: HTMLImageElement;
+  private extraTargets: (HTMLElement | SVGElement)[];
   private offset = { x: 0, y: 0 };
   private scale = 1;
   private mode: Mode = "idle";
   private panAnchor: PanAnchor | null = null;
   private zoomAnchor: ZoomAnchor | null = null;
 
-  constructor(img: HTMLImageElement) {
+  constructor(
+    img: HTMLImageElement,
+    extraTargets: (HTMLElement | SVGElement)[] = [],
+  ) {
     this.img = img;
+    this.extraTargets = extraTargets;
     this.img.style.transformOrigin = "0 0";
+    for (const el of this.extraTargets) {
+      (el as HTMLElement).style.transformOrigin = "0 0";
+    }
     this.initialize();
     window.addEventListener("resize", () => this.applyClampAndTransform());
+  }
+
+  getOffset(): { x: number; y: number } {
+    return { x: this.offset.x, y: this.offset.y };
+  }
+
+  getScale(): number {
+    return this.scale;
   }
 
   private initialize(): void {
@@ -163,6 +179,10 @@ export class Panner {
       this.offset.y = Math.min(0, Math.max(vh - scaledH, this.offset.y));
     }
 
-    this.img.style.transform = `translate3d(${this.offset.x}px, ${this.offset.y}px, 0) scale(${this.scale})`;
+    const t = `translate3d(${this.offset.x}px, ${this.offset.y}px, 0) scale(${this.scale})`;
+    this.img.style.transform = t;
+    for (const el of this.extraTargets) {
+      (el as HTMLElement).style.transform = t;
+    }
   }
 }
