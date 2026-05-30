@@ -13,7 +13,7 @@ function $<T extends HTMLElement>(id: string): T {
 
 function loadSlideUrls(): string[] {
   const mods = import.meta.glob<string>(
-    "./assets/slides/*.{png,jpg,jpeg,webp}",
+    "./assets/slides/*.{png,jpg,jpeg,webp,svg}",
     { eager: true, import: "default" },
   );
   return Object.keys(mods)

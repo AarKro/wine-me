@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3a1a1a"/>
+      <stop offset="1" stop-color="#1a0a0a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg3)"/>
+  <text x="960" y="440" font-family="system-ui, sans-serif" font-size="140" font-weight="800" fill="#ffffff" text-anchor="middle">Let's explore</text>
+  <text x="960" y="580" font-family="system-ui, sans-serif" font-size="48" font-weight="400" fill="#c9a4a4" text-anchor="middle">Swipe right one more time to enter the map.</text>
+  <text x="960" y="980" font-family="system-ui, sans-serif" font-size="32" font-weight="500" fill="#6b4a4a" text-anchor="middle">Slide 3 of 3</text>
+</svg>
