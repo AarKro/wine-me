@@ -5,11 +5,14 @@ import type {
 import {
   FIST_THRESHOLD_HIGH,
   FIST_THRESHOLD_LOW,
+  POINT_CURLED_THRESHOLD,
+  POINT_EXTENDED_THRESHOLD,
+  POINT_HYSTERESIS,
   SMOOTHING_ALPHA,
 } from "./config";
 
 export type HandKind = "Left" | "Right";
-export type HandState = "open" | "grab";
+export type HandState = "open" | "grab" | "point";
 
 export interface HandObs {
   kind: HandKind;
@@ -21,9 +24,12 @@ export interface GestureFrame {
   hands: HandObs[];
 }
 
-const FINGERTIPS = [8, 12, 16, 20] as const;
 const WRIST = 0;
 const MIDDLE_MCP = 9;
+const INDEX_TIP = 8;
+const MIDDLE_TIP = 12;
+const RING_TIP = 16;
+const PINKY_TIP = 20;
 
 interface PerHandState {
   state: HandState;
@@ -39,7 +45,7 @@ function dist(a: NormalizedLandmark, b: NormalizedLandmark): number {
   return Math.sqrt(dx * dx + dy * dy + dz * dz);
 }
 
-function classifyOpenness(
+function classifyState(
   landmarks: NormalizedLandmark[],
   prev: HandState,
 ): HandState {
@@ -47,16 +53,40 @@ function classifyOpenness(
   const palmScale = dist(wrist, landmarks[MIDDLE_MCP]);
   if (palmScale === 0) return prev;
 
-  let sum = 0;
-  for (const tip of FINGERTIPS) {
-    sum += dist(landmarks[tip], wrist) / palmScale;
-  }
-  const avg = sum / FINGERTIPS.length;
+  const norm = (idx: number) => dist(landmarks[idx], wrist) / palmScale;
+  const index = norm(INDEX_TIP);
+  const middle = norm(MIDDLE_TIP);
+  const ring = norm(RING_TIP);
+  const pinky = norm(PINKY_TIP);
+  const avg = (index + middle + ring + pinky) / 4;
 
+  // Fist takes priority. Hysteresis: easier to keep "grab" than to enter it.
   if (prev === "grab") {
-    return avg > FIST_THRESHOLD_HIGH ? "open" : "grab";
+    if (avg <= FIST_THRESHOLD_HIGH) return "grab";
+  } else if (avg < FIST_THRESHOLD_LOW) {
+    return "grab";
   }
-  return avg < FIST_THRESHOLD_LOW ? "grab" : "open";
+
+  // Two-finger point: index + middle extended, ring + pinky curled.
+  // Same hysteresis idea — wider acceptance band while already in `point`.
+  const extendedT =
+    prev === "point"
+      ? POINT_EXTENDED_THRESHOLD - POINT_HYSTERESIS
+      : POINT_EXTENDED_THRESHOLD;
+  const curledT =
+    prev === "point"
+      ? POINT_CURLED_THRESHOLD + POINT_HYSTERESIS
+      : POINT_CURLED_THRESHOLD;
+  if (
+    index > extendedT &&
+    middle > extendedT &&
+    ring < curledT &&
+    pinky < curledT
+  ) {
+    return "point";
+  }
+
+  return "open";
 }
 
 export function classify(result: HandLandmarkerResult | null): GestureFrame {
@@ -79,7 +109,7 @@ export function classify(result: HandLandmarkerResult | null): GestureFrame {
     seen.add(kind);
 
     const prev = trackers.get(kind);
-    const state = classifyOpenness(landmarks, prev?.state ?? "open");
+    const state = classifyState(landmarks, prev?.state ?? "open");
 
     const handMarker = landmarks[MIDDLE_MCP];
     const raw = { x: 1 - handMarker.x, y: handMarker.y };

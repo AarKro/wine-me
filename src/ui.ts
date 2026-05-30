@@ -1,16 +1,26 @@
 import type { GestureFrame } from "./gesture";
+import type { SlideMode } from "./slides";
 
-export type Status = "none" | "open" | "pan" | "zoom";
+export type Status = "none" | "open" | "pan" | "zoom" | "slide" | "swipe";
 
 const STATUS_LABEL: Record<Status, string> = {
   none: "NO HAND",
   open: "OPEN",
   pan: "PAN",
   zoom: "ZOOM",
+  slide: "SLIDE",
+  swipe: "SWIPE",
 };
 
-export function frameStatus(frame: GestureFrame): Status {
+export function frameStatus(
+  frame: GestureFrame,
+  mode: SlideMode,
+  justSwiped: boolean,
+): Status {
+  if (justSwiped) return "swipe";
   if (frame.hands.length === 0) return "none";
+  if (frame.hands.some((h) => h.state === "point")) return "slide";
+  if (mode === "slides") return "open";
   const grabbing = frame.hands.filter((h) => h.state === "grab").length;
   if (grabbing >= 2) return "zoom";
   if (grabbing === 1) return "pan";
